@@ -510,9 +510,9 @@ In this task, you upload the sample Seattle Airbnb data files into the container
 
 4. Click on **Advanced settings** and select the existing Resource group **postgres**. Select the existing Storage account with the name **postgreslabs<inject key="deploymentId" enableCopy="false"/>** and create a File share with the name **blob**. Click on **Create storage**.
 
-   ![](media/storage2)
+   ![](media/storage2.png)
 
-   ![](media/storage1)
+   ![](media/storage1.png)
 
 6. At the Azure Cloud Shell prompt, execute the following `curl` commands to download the Seattle Airbnb data files.
 
