@@ -508,11 +508,13 @@ In this task, you upload the sample Seattle Airbnb data files into the container
 
    ![](media/welcome-select-bash.png)
 
-4. Click on Advanced settings and select the existing Resource group **postgres**. Select the existing Storage account with the name **postgreslabs<inject key="deploymentId" enableCopy="false"/>** and create a File share with the name **blob**. Click on **Create storage**.
+4. Click on **Advanced settings** and select the existing Resource group **postgres**. Select the existing Storage account with the name **postgreslabs<inject key="deploymentId" enableCopy="false"/>** and create a File share with the name **blob**. Click on **Create storage**.
 
-   ![](media/create-storageaccount.png)
+   ![](media/storage2)
 
-5. At the Azure Cloud Shell prompt, execute the following `curl` commands to download the Seattle Airbnb data files.
+   ![](media/storage1)
+
+6. At the Azure Cloud Shell prompt, execute the following `curl` commands to download the Seattle Airbnb data files.
 
     ```bash
     curl -O https://solliancepublicdata.blob.core.windows.net/ms-postgresql-labs/listings.csv
@@ -528,7 +530,7 @@ In this task, you upload the sample Seattle Airbnb data files into the container
 
     The above commands download the files into the storage account associated with your Cloud Shell.
 
-6. Next, you will use the [Azure CLI](https://learn.microsoft.com/cli/azure/) to upload the files into the `seattle-airbnb-data` container you created in your storage account. Create variables to hold your storage account name and key values to make things easier.
+7. Next, you will use the [Azure CLI](https://learn.microsoft.com/cli/azure/) to upload the files into the `seattle-airbnb-data` container you created in your storage account. Create variables to hold your storage account name and key values to make things easier.
 
     Copy your storage account name by selecting the **Copy to clipboard** button next to the storage account name on the Access keys page above your Cloud Shell:
 
