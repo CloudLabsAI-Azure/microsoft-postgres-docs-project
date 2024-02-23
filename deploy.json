@@ -41,6 +41,73 @@
   },
   "resources": [
       {
+          "type": "Microsoft.DBforPostgreSQL/flexibleServers",
+          "apiVersion": "2021-06-01",
+          "name": "[variables('postgresqlname')]",
+          "location": "[variables('location')]",
+          "sku": {
+              "name": "Standard_D2ds_v5",
+              "tier": "GeneralPurpose"
+            },
+          "properties": {
+              "version": "14",
+              "administratorLogin": "[parameters('postGreSQLadminUsername')]",
+              "administratorLoginPassword": "[parameters('postGreSQLadminPassword')]",
+              "network": {},
+              "highAvailability": {
+                  "mode": "Disabled"
+              },
+              "storage": {
+                  "storageSizeGB": "128"
+              },
+              "backup": {
+                  "backupRetentionDays": 7,
+                  "geoRedundantBackup": "Disabled"
+              },
+              "availabilityZone": "2"
+          },  
+            "resources": [
+      {
+          "type": "Microsoft.DBforPostgreSQL/flexibleServers/databases",
+          "apiVersion": "2023-03-01-preview",
+          
+          "name": "[format('{0}/{1}', variables('postgresqlname'), 'airbnb')]",
+          "dependsOn": [
+              "[resourceId('Microsoft.DBforPostgreSQL/flexibleServers', variables('postgresqlname'))]"
+          ],
+          "properties": {
+            "charset": "utf8",
+            "collation": "en_US.utf8"
+          }
+         
+        }
+  ]
+      },
+      {
+          "type": "Microsoft.DBforPostgreSQL/flexibleServers/firewallRules",
+          "apiVersion": "2020-02-14-privatepreview",
+          "name": "[concat(variables('postgresqlname'), '/AllowAllWindowsAzureIps')]",
+          "dependsOn": [
+              "[resourceId('Microsoft.DBforPostgreSQL/flexibleServers', variables('postgresqlname'))]"
+          ],
+          "properties": {
+              "startIpAddress": "0.0.0.0",
+              "endIpAddress": "0.0.0.0"
+          }
+      },
+      {
+          "type": "Microsoft.DBforPostgreSQL/flexibleServers/firewallRules",
+          "apiVersion": "2020-02-14-privatepreview",
+          "name": "[concat(variables('postgresqlname'), '/All')]",
+          "dependsOn": [
+              "[resourceId('Microsoft.DBforPostgreSQL/flexibleServers', variables('postgresqlname'))]"
+          ],
+          "properties": {
+              "startIpAddress": "0.0.0.0",
+              "endIpAddress": "255.255.255.255"
+          }
+      },
+      {
         "type": "Microsoft.Storage/storageAccounts",
         "apiVersion": "2022-05-01",
         "name": "[variables('storageAccountName')]",
