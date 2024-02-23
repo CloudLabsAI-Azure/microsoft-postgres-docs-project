@@ -5,10 +5,10 @@
       "deploymentId": {
         "value": "GET-DEPLOYMENT-ID"
       },
-      "FlexiblepostGreSQLadminUsername": {
+      "postGreSQLadminUsername": {
         "value": "s2admin"
       },
-      "FlexiblepostGreSQLadminPassword": {
+      "postGreSQLadminPassword": {
         "value": "Seattle123Seattle123"
       }
     }
