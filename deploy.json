@@ -1,0 +1,140 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "deploymentId": {
+      "type": "string"
+    },
+    "postGreSQLadminUsername": {
+      "type": "string"
+    },
+    "postGreSQLadminPassword": {
+      "type": "securestring"
+    },
+    "storageAccountType": {
+      "type": "string",
+      "defaultValue": "Standard_LRS",
+      "allowedValues": [
+        "Standard_LRS",
+        "Standard_GRS",
+        "Standard_RAGRS"
+      ],
+      "metadata": {
+        "description": "Storage Account type"
+      }
+    }
+  },
+  "variables": {
+    "azureSubscriptionID": "[subscription().subscriptionId]",
+    "azureTenantID": "[subscription().tenantId]",
+    "rgName": "[resourceGroup().name]",
+    "addressPrefix": "10.0.0.0/16",
+    "subnetName": "Subnet",
+    "subnetPrefix": "10.0.0.0/24",
+    "adlsStorageAccountName": "[concat('asadatalake', parameters('deploymentId'))]",
+    "location": "[resourceGroup().location]",
+    "postgresqlname": "[concat('flexiblepostgresql', parameters('deploymentId'))]",
+    "dbflexibleserver": "airbnb",
+    "firewallRules_name": "AllowAllWindowsAzureIps",
+    "storageAccountName": "[concat('postgreslabs', parameters('deploymentId'))]",
+    "ContainerName": "seattle-airbnb-data"
+  },
+  "resources": [
+      {
+          "type": "Microsoft.DBforPostgreSQL/flexibleServers",
+          "apiVersion": "2021-06-01",
+          "name": "[variables('postgresqlname')]",
+          "location": "[variables('location')]",
+          "sku": {
+              "name": "Standard_D2ds_v5",
+              "tier": "GeneralPurpose"
+            },
+          "properties": {
+              "version": "14",
+              "administratorLogin": "[parameters('postGreSQLadminUsername')]",
+              "administratorLoginPassword": "[parameters('postGreSQLadminPassword')]",
+              "network": {},
+              "highAvailability": {
+                  "mode": "Disabled"
+              },
+              "storage": {
+                  "storageSizeGB": "128"
+              },
+              "backup": {
+                  "backupRetentionDays": 7,
+                  "geoRedundantBackup": "Disabled"
+              },
+              "availabilityZone": "2"
+          },  
+            "resources": [
+      {
+          "type": "Microsoft.DBforPostgreSQL/flexibleServers/databases",
+          "apiVersion": "2023-03-01-preview",
+          
+          "name": "[format('{0}/{1}', variables('postgresqlname'), 'airbnb')]",
+          "dependsOn": [
+              "[resourceId('Microsoft.DBforPostgreSQL/flexibleServers', variables('postgresqlname'))]"
+          ],
+          "properties": {
+            "charset": "utf8",
+            "collation": "en_US.utf8"
+          }
+         
+        }
+  ]
+      },
+      {
+          "type": "Microsoft.DBforPostgreSQL/flexibleServers/firewallRules",
+          "apiVersion": "2020-02-14-privatepreview",
+          "name": "[concat(variables('postgresqlname'), '/AllowAllWindowsAzureIps')]",
+          "dependsOn": [
+              "[resourceId('Microsoft.DBforPostgreSQL/flexibleServers', variables('postgresqlname'))]"
+          ],
+          "properties": {
+              "startIpAddress": "0.0.0.0",
+              "endIpAddress": "0.0.0.0"
+          }
+      },
+      {
+          "type": "Microsoft.DBforPostgreSQL/flexibleServers/firewallRules",
+          "apiVersion": "2020-02-14-privatepreview",
+          "name": "[concat(variables('postgresqlname'), '/All')]",
+          "dependsOn": [
+              "[resourceId('Microsoft.DBforPostgreSQL/flexibleServers', variables('postgresqlname'))]"
+          ],
+          "properties": {
+              "startIpAddress": "0.0.0.0",
+              "endIpAddress": "255.255.255.255"
+          }
+      },
+      {
+        "type": "Microsoft.Storage/storageAccounts",
+        "apiVersion": "2022-05-01",
+        "name": "[variables('storageAccountName')]",
+        "location": "[variables('location')]",
+        "sku": {
+          "name": "[parameters('storageAccountType')]"
+        },
+        "kind": "Storage",
+      "resources": [
+      {
+        "type": "blobServices/containers",
+        "apiVersion": "2018-03-01-preview",
+        "name": "[concat('default/', variables('ContainerName'))]",
+        "dependsOn": [
+            "[variables('StorageAccountName')]"
+        ],
+        "properties": {
+            "publicAccess": "None"
+        }
+    }
+  ]
+  }
+  ],
+  "outputs": {
+    "uniqueId": {
+      "type": "String",
+      "value": "[ parameters('deploymentId')]"
+    }
+  }
+}
