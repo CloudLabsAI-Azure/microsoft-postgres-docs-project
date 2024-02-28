@@ -64,7 +64,7 @@
                   "backupRetentionDays": 7,
                   "geoRedundantBackup": "Disabled"
               },
-              "availabilityZone": "2"
+              "availabilityZone": "none"
           },  
             "resources": [
       {
