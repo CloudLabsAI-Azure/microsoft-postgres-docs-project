@@ -190,6 +190,10 @@ Write-Host "Executing main ARM deployment" -ForegroundColor Green -Verbose
 #will fire deployment async so the main deployment shows "succeeded"
 ExecuteDeployment $templatesFile "$($parametersFile).json" $resourceGroupName;
 
+$ODLuser = Get-AzADUser -DisplayName "ODL_User $DeploymentID"
+
+$ODLuserID = $ODLuser.Id
+
 #Assigning Cognitive Services Contributor role
 New-AzRoleAssignment -ObjectId "$ODLuserID" -Scope "/subscriptions/$subscriptionId" -RoleDefinitionName "Cognitive Services Contributor"
 
