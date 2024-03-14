@@ -190,4 +190,10 @@ Write-Host "Executing main ARM deployment" -ForegroundColor Green -Verbose
 #will fire deployment async so the main deployment shows "succeeded"
 ExecuteDeployment $templatesFile "$($parametersFile).json" $resourceGroupName;
 
+#Assigning Cognitive Services Contributor role
+New-AzRoleAssignment -ObjectId "$ODLuserID" -Scope "/subscriptions/$subscriptionId" -RoleDefinitionName "Cognitive Services Contributor"
+
+#Remove Owner role from subscription
+Remove-AzRoleAssignment -ObjectId "$ODLuserID" -RoleDefinitionName "Owner" -Scope "/subscriptions/$SubscriptionId"
+
 Stop-Transcript
